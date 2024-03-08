@@ -3,6 +3,7 @@
     "name": "ToDoList",
     "slug": "ToDoList",
     "version": "1.0.0",
+    "entryPoint": "./components/App.js",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -1,96 +1,37 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+require('dotenv').config();
 
-import React, { Component } from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+const User = require('./models/User');
+const userRouter = require('./routes/User');
+const UserController = require('./controllers/userController'); // Import userController
 
-import MainScreen from './components/Main'
+const app = express();
+const port = process.env.PORT || 3000; // Use port from environment variable or default to 3000
 
-const Stack = createStackNavigator();
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => {
+    console.log('Connected to MongoDB');
+})
+.catch((err) => {
+    console.error('Error connecting to MongoDB', err);
+});
 
+// Middleware
+app.use(cors({ origin: true, credentials: true }));
+app.use(bodyParser.json());
+app.use('/api', userRouter);
 
-export class App extends Component {
- 
-  render() {
+// Login route
+app.post('/api/login', UserController.login);
 
-      return(
-         
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Main">
-            <Stack.Screen
-              name="Main"
-              component={MainScreen}
-              options={{ headerShown: false }}
-            />
-
-          </Stack.Navigator>
-          </NavigationContainer>
-      )
-
-       // For Auth
-       
-        // <NavigationContainer>
-        //   <Stack.Navigator initialRouteName="Landing">
-        //     <Stack.Screen
-        //       name="Landing"
-        //       component={LandingScreen}
-        //       options={{
-        //         headerShown: false,
-        //       }}
-        //     />
-        //     <Stack.Screen
-        //       name="Register"
-        //       component={RegisterScreen}
-        //       options={{
-        //         headerShadowVisible: false,
-        //         headerTintColor: "#ffffff",
-        //         headerStyle: {
-        //           backgroundColor: "#215A88",
-        //           borderBottomWidth: 0,
-        //         },
-        //       }}
-        //     />
-        //     <Stack.Screen
-        //       name="ForgotPassword"
-        //       component={ForgotPasswordScreen}
-        //       options={{
-        //         title: "Forgot Password",
-        //         headerShown: false,
-        //       }}
-        //     />
-        //     <Stack.Screen
-        //       name="Login"
-        //       component={LoginScreen}
-        //       options={{
-        //         headerShadowVisible: false,
-        //         headerTintColor: "#ffffff",
-        //         headerStyle: {
-        //           backgroundColor: "#215A88",
-        //           borderBottomWidth: 0,
-        //         },
-        //       }}
-        //     />
-        //   </Stack.Navigator>
-        // </NavigationContainer>
-      
-    
-    
-     
-    
-  }
-}
-export default App;
-
-const styles = StyleSheet.create({
-  capture: {
-    //position: "relative",
-    //bottom: 100,
-    right: 10,
-    width: 100,
-    height: 100,
-    borderRadius: 100,
-    borderColor: "#263238",
-    borderWidth: 6,
-    alignSelf: "center",
-  },
+// Start the server
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
