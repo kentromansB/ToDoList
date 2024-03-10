@@ -9,7 +9,7 @@ const userRouter = require('./routes/User');
 const UserController = require('./controllers/userController'); // Import userController
 
 const app = express();
-const port = process.env.PORT || 3000; // Use port from environment variable or default to 3000
+const port = process.env.PORT ; // Use port from environment variable or default to 3000
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -28,8 +28,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
 app.use('/api', userRouter);
 
-// Login route
-app.post('/api/login', UserController.login);
+
 
 // Start the server
 app.listen(port, () => {

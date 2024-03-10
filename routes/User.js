@@ -4,6 +4,7 @@ const UserController = require('../controllers/userController');
 
 router.post('/register', UserController.register);
 router.post('/login', UserController.login);
+router.post('/checkUsername', UserController.checkUsername);
 
 // router.post('/todos', async (req, res) => {
 //     const { title, description, completed } = req.body;

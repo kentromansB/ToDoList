@@ -1,16 +1,17 @@
 const User = require('../models/User');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const register = async (req, res) => {
     try {
         const { username, password } = req.body;
 
         // Check if username already exists
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
+        // const existingUser = await User.findOne({ username });
+        // if (existingUser) {
+        //     return res.status(400).json({ message: "User already exists" });
+        // }
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,6 +26,23 @@ const register = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
+async function checkUsername(req, res) {
+ const { username } = req.body;
+  User.findOne({ username }, (err, user) => {
+    if (err) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+    }
+    if (user) {
+        // User exists
+        return res.json({ exists: true });
+    } else {
+        // User does not exist
+        return res.json({ exists: false });
+    }
+});
+;
+}
 
 async function login(req, res) {
     const { username, password } = req.body;
@@ -49,4 +67,4 @@ async function login(req, res) {
     }
 }
 
-module.exports = { register, login };
+module.exports = { register, login, checkUsername };

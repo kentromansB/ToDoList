@@ -11,6 +11,7 @@ import {
 
 import { TextInput } from "react-native-paper";
 import axios from "axios";
+import { checkUsername } from "../../controllers/userController";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -35,6 +36,23 @@ function Register() {
     }
   };
 
+  const checkUsernameApi = async () => {
+    const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
+    .then(res => {
+        if (res.data.exists) {
+            Alert.alert('User Exists', 'This username is already taken.');
+            console.log(res.data)
+        } else {
+            // Alert.alert('User Does Not Exist', 'You can use this username.');
+            registerApi(username)
+        }
+    })
+    .catch(error => {
+        Alert.alert('Error', 'Failed to check user existence.');
+    });
+};
+
+
   const registerApi = async () => {
     try {
       const res = await axios.post("http://10.0.0.42:3007/api/register", {
@@ -42,7 +60,6 @@ function Register() {
         password: password,
       });
       console.log(res.data);
-      navigation.navigate('Login')
       // Show alert message
       Alert.alert("Registration successful", "You have been registered successfully.");
     } catch (error) {
@@ -83,7 +100,7 @@ function Register() {
       <View style={{ paddingTop: 20 }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => registerApi(data)}
+          onPress={() => checkUsernameApi(data)}
         >
           <Text style={styles.text}>Sign Up</Text>
         </TouchableOpacity>
