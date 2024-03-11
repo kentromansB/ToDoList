@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+
 import {
   View,
   Text,
@@ -11,12 +11,13 @@ import {
 
 import { TextInput } from "react-native-paper";
 import axios from "axios";
-import { checkUsername } from "../../controllers/userController";
 
-function Register() {
+
+function Register({navigation}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState();
+
   // function onSignUp() {
   //     axios.post('/register', {
   //         username: username,
@@ -27,30 +28,23 @@ function Register() {
   //       })
 
   //   }
-  const fetchApi = async () => {
-    try {
-      const res = await axios.get("http://10.0.0.42:3007/");
-      console.log(res.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+ 
 
-  const checkUsernameApi = async () => {
-    const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
-    .then(res => {
-        if (res.data.exists) {
-            Alert.alert('User Exists', 'This username is already taken.');
-            console.log(res.data)
-        } else {
-            // Alert.alert('User Does Not Exist', 'You can use this username.');
-            registerApi(username)
-        }
-    })
-    .catch(error => {
-        Alert.alert('Error', 'Failed to check user existence.');
-    });
-};
+//   const checkUsernameApi = async () => {
+//     const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
+//     .then(res => {
+//         if (res.data.exists) {
+//             Alert.alert('User Exists', 'This username is already taken.');
+//             console.log(res.data)
+//         } else {
+//             // Alert.alert('User Does Not Exist', 'You can use this username.');
+//             registerApi(username)
+//         }
+//     })
+//     .catch(error => {
+//         Alert.alert('Error', 'Failed to check user existence.');
+//     });
+// };
 
 
   const registerApi = async () => {
@@ -66,10 +60,7 @@ function Register() {
       console.error(error);
     }
   };
-  useEffect(() => {
-    fetchApi();
-  }, []);
-
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -100,7 +91,7 @@ function Register() {
       <View style={{ paddingTop: 20 }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => checkUsernameApi(data)}
+          onPress={() => registerApi(data)}
         >
           <Text style={styles.text}>Sign Up</Text>
         </TouchableOpacity>

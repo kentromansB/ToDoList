@@ -22,13 +22,13 @@ import AllTasksScreen from "./AllTasks";
 const Tab = createMaterialTopTabNavigator();
 
 function ValidateWord({ route }) {
-  const { language } = route?.params ?? {};
+  
 
   return (
     <SafeAreaView style={styles.container}>
       
       <Tab.Navigator
-        screenOptions={({ route }) => ({
+        screenOptions={() => ({
           tabBarContentContainerStyle: {
             backgroundColor: "#f2f2f2",
           },
@@ -42,7 +42,7 @@ function ValidateWord({ route }) {
           },
         })}
       >
-        {/* <Tab.Screen
+        <Tab.Screen
           name="all"
           children={() => <AllTasksScreen />}
         />
@@ -53,7 +53,7 @@ function ValidateWord({ route }) {
         <Tab.Screen
           name="pending"
           children={() => <CompletedTasksScreen />}
-        /> */}
+        />
       </Tab.Navigator>
       
 
