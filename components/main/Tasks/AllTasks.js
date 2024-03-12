@@ -1,78 +1,77 @@
-// import React, { useEffect, useState } from "react";
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   Image,
-//   Pressable,
-//   TextInput,
-//   FlatList,
-//   RefreshControl,
-//   SafeAreaView,
-// } from "react-native";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-// import { Dimensions } from "react-native";
-// import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TextInput,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AddButton from "./AddButton";
+// import SeeMore from "react-native-see-more-inline";
 
-// function AllTasks({ navigation }) {
-//   const [status, setStatus] = useState("All");
-//   const [datalist, setDatalist] = useState("");
-//   const [refreshing, setRefreshing] = useState(true);
-//   const [search, setSearch] = useState("");
-//   const [filteredDataSource, setFilteredDataSource] = useState("");
-//   const [masterDataSource, setMasterDataSource] = useState("");
-  
+import { Dimensions } from "react-native";
+
+function AllTasks({ navigation, route, language }) {
+  const dimensions = Dimensions.get("window");
+  //const imageHeight = Math.round(dimensions.width * 1 / 1);
+  const imageWidth = dimensions.width;
+  const [datalist, setDatalist] = useState("");
+  const [refreshing, setRefreshing] = useState(true);
+
 //   useEffect(() => {
 //     getData();
 //   }, []);
 
 //   const getData = () => {
 //     //Service to get the data from the server to render
-//     //Upload == 1 , data from the dictionary that was contributed by the user
+//     // Fetch the data that are posted by all of the users.
 //     firebase
 //       .firestore()
 //       .collection("languages")
 //       .doc(language)
-//       .collection("dictionary")
-//       .where("upload", "==", "1")
+//       .collection("posts")
+//       .where("status", "==", "1")
 //       .orderBy("creation", "desc")
 //       .get()
 //       .then((snapshot) => {
-        
-//         let masterDataSource = snapshot.docs.map((doc) => {
+//         let postsAll = snapshot.docs.map((doc) => {
 //           const data = doc.data();
 //           const id = doc.id;
 //           return { id, ...data };
 //         });
-//         setDatalist(masterDataSource);
-//         setFilteredDataSource(masterDataSource);
-//         setMasterDataSource(masterDataSource);
+//         setDatalist(postsAll);
 //         setRefreshing(false);
 //       });
 //   };
-//   const searchFilterFunction = (text) => {
-//     // Check if searched text is not blank
-//     if (text) {
-//       // Inserted text is not blank
-//       // Filter the masterDataSource
-//       // Update FilteredDataSource
-//       const newData = masterDataSource.filter(function (item) {
-//         const itemData = `${
-//           item.word ? item.word.toUpperCase() : "".toUpperCase()
-//         }`;
-//         const textData = text.toUpperCase();
-//         return itemData.indexOf(textData) > -1;
-//       });
-//       setFilteredDataSource(newData);
-//       setSearch(text);
-//     } else {
-//       // Inserted text is blank
-//       // Update FilteredDataSource with masterDataSource
-//       setFilteredDataSource(masterDataSource);
-//       setSearch(text);
-//     }
-//   };
 
+//   const ItemView = ({ item }) => {
+//     return (
+//       // Flat List Item
+//       <View style={styles.container}>
+//         <View style={styles.profile}>
+//           <Text style={styles.profilename}>{item.username} </Text>
+//         </View>
+
+//         <Text style={{ fontWeight: "bold", marginLeft: 10 }}>
+//           {" "}
+//           {item.title}
+//         </Text>
+//         <View style={{ padding: 30 }}>
+//           <Text style={styles.textVocab}> {item.description}</Text>
+//         </View>
+//         <Image
+//           style={{ width: imageWidth, height: imageWidth }}
+//           source={{ uri: item.downloadURL }}
+//         />
+//       </View>
+//     );
+//   };
 //   const onRefresh = () => {
 //     //Clear old data of the list
 //     setDatalist([]);
@@ -80,250 +79,251 @@
 //     getData();
 //   };
 
-//   const setStatusFilter = (status) => {
-//     if (status !== "All") {
-//       //purple and green
-//       setDatalist([...data.filter((e) => e.status === status)]);
-//     } else {
-//       setDatalist(data);
-//     }
-//     setStatus(status);
-//   };
-
-//   const renderItem = ({ item, index }) => {
-    
-//     return (
-      
-//       <TouchableOpacity
-//         key={index}
-//         style={styles.itemContainer}
-//         onPress={() =>
-//           navigation.navigate("Validation", { data: item, language: language })
-//         }
-//       >
-//         <View style={{ flexDirection: "column", flex: 1 }}>
-//           <View style={styles.itemBody}>
-//             <Text style={styles.itemsName}>{item?.word}</Text>
-//             <Text>{item?.meaning}</Text>
-//           </View>
-//           <View style={styles.itemBody}>
-//             <Text style={{ fontSize: 9 }}>
-//               {item?.creation.toDate().toDateString()}
-//             </Text>
-//           </View>
-//         </View>
-
-//         <View style={styles.buttonContainer}>
-//           <View
-//             style={[
-//               styles.itemStatus,
-//               {
-//                 backgroundColor:
-//                   item.status == "0"
-//                     ? "#FFEFC5"
-//                     : "#B5F5D1" && item.status == "2"
-//                     ? "#FFEFEE"
-//                     : "#B5F5D1",
-//               },
-//             ]}
-//           >
-//             <Text
-//               style={[
-//                 styles.statusFont,
-//                 {
-//                   color:
-//                     item.status == "0"
-//                       ? "#CEA032"
-//                       : "#63C579" && item.status == "2"
-//                       ? "#FF9797"
-//                       : "#63C579",
-//                 },
-//               ]}
-//             >
-//               {" "}
-//               {item.status == "0"
-//                 ? "Pending"
-//                 : item.status === "1"
-//                 ? "Confirmed"
-//                 : "Declined"}
-//             </Text>
-//           </View>
-//           <View style={[styles.arrowRight]}>
-//             <MaterialCommunityIcons
-//               name="chevron-right"
-//               size={20}
-//               color="#215a88"
-//             />
-//           </View>
-//         </View>
-//       </TouchableOpacity>
-//     );
-//   };
-
-//   const separator = () => {
-//     return <View style={{ height: 1, backgroundColor: "#E6E5E5" }} />;
-//   };
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <View
-//         style={{
-//           alignItems: "center",
-//           paddingVertical: 15,
-//         }}
-//       >
-//         <TextInput
-//           placeholder="Search for words..."
-//           style={styles.input}
-//           onChangeText={(text) => searchFilterFunction(text)}
-//         ></TextInput>
-//       </View>
-//       <FlatList
-//         data={filteredDataSource}
-//         maxToRenderPerBatch={10}
-//         initialNumToRender={10}
-//         updateCellsBatchingPeriod={50}
-//         windowSize={10}
-//         keyExtractor={(e, i) => i.toString()}
-//         renderItem={renderItem}
-//         ItemSeparatorComponent={separator}
-//         refreshControl={
-//           <RefreshControl
-//             //refresh control used for the Pull to Refresh
-//             refreshing={refreshing}
-//             onRefresh={onRefresh}
-//           />
-//         }
-//       />
-//     </SafeAreaView>
+  return console.log("Rendered All Tasks")
+//     <FlatList
+//       nestedScrollEnabled
+//       numColumns={1}
+//       horizontal={false}
+//       data={datalist}
+//       style={{ flex: 1 }}
+//       renderItem={ItemView}
+//       refreshControl={
+//         <RefreshControl
+//           //refresh control used for the Pull to Refresh
+//           refreshing={refreshing}
+//           onRefresh={onRefresh}
+//         />
+//       }
+//     />
 //   );
-// }
+}
 
-// export default AllTasks;
+export default AllTasks;
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     //paddingHorizontal:10,
-//     justifyContent: "center",
-//   },
-//   listTab: {
-//     alignSelf: "center",
-//     marginBottom: 20,
-//     flexDirection: "row",
-//     paddingHorizontal: 2,
-//     backgroundColor: "#ebebeb",
-//     borderRadius: 10,
-//   },
-//   input: {
-//     height: 45,
-//     width: "90%",
-//     backgroundColor: "white",
-//     borderTopLeftRadius: 10,
-//     borderTopRightRadius: 10,
-//     borderBottomRightRadius: 10,
-//     borderBottomLeftRadius: 10,
-//     paddingLeft: 20,
-//   },
+const styles = StyleSheet.create({
+  title: {
+    top: 20,
+    left: 10,
+  },
+  container: {
+    alignItems: "flex-start",
+    marginBottom: 20,
+    flex: 1,
+  },
+  button: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowRadius: 10,
+    shadowColor: "#F02A4B",
+    shadowOpacity: 0.3,
+    shadowOffset: { height: 10 },
+    backgroundColor: "#8E2835",
+  },
+  imageprofile: {
+    height: 45,
+    width: 45,
+    borderRadius: 100,
+    margin: 10,
+  },
+  profile: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profilename: {
+    fontWeight: "bold",
+    paddingLeft: 10,
+    paddingBottom: 20,
+    paddingTop: 10,
+  },
 
-//   btnTab: {
-//     width: Dimensions.get("window").width / 4.5,
-//     flexDirection: "row",
-//     borderWidth: 0.5,
-//     borderColor: "#ebebeb",
-//     padding: 10,
-//     justifyContent: "center",
-//   },
-//   textTab: {
-//     fontSize: 12,
-//     fontWeight: "bold",
-//     color: "#000000",
-//     //lineHeight: 1,
-//   },
-//   brnTabActive: {
-//     backgroundColor: "#fff",
-//     borderRadius: 10,
-//   },
-//   textTabActive: {
-//     color: "#8E2835",
-//     fontWeight: "bold",
-//     fontSize: 13,
-//   },
-//   itemContainer: {
-//     flexDirection: "row",
-//     paddingVertical: 15,
-//     paddingHorizontal: 20,
-//   },
-//   itemLogo: {
-//     padding: 10,
-//   },
-//   itemImage: {
-//     width: 50,
-//     height: 50,
-//   },
-
-//   itemBody: {
-//     flex: 1,
-//     paddingHorizontal: 10,
-//     justifyContent: "center",
-//   },
-
-//   itemsName: {
-//     fontWeight: "bold",
-//     fontSize: 16,
-//   },
-//   itemStatus: {
-//     backgroundColor: "#69C080",
-//     paddingHorizontal: 17,
-//     height: 30,
-//     justifyContent: "center",
-//     right: 14,
-//     borderRadius: 5,
-//   },
-//   headLine: {
-//     flexDirection: "column",
-//     width: "100%",
-//     padding: 30,
-//     top: -20,
-//     height: 150,
-//     backgroundColor: "#8E2835",
-//     alignItems: "flex-start",
-//     justifyContent: "center",
-//     position: "relative",
-//   },
-//   textHead: {
-//     fontSize: 20,
-//     fontWeight: "bold",
-//     letterSpacing: 0.25,
-//     position: "relative",
-//     alignSelf: "center",
-//     color: "white",
-//   },
-//   textSubHead: {
-//     flexDirection: "row",
-//     fontSize: 13,
-//     letterSpacing: 0.25,
-//     color: "white",
-//   },
-//   title: {
-//     top: 40,
-//     //left: 110,
-//   },
-//   statusFont: {
-//     fontWeight: "bold",
-//   },
-//   arrowRight: {
-//     backgroundColor: "#ebebeb",
-//     paddingHorizontal: 5,
-//     width: 30,
-//     height: 30,
-//     justifyContent: "center",
-//     right: 2,
-//     borderRadius: 5,
-//     margin: 10,
-//   },
-//   buttonContainer: {
-//     alignItems: "flex-end",
-//     alignSelf: "center",
-//   },
-// });
+  textHead: {
+    flexDirection: "row",
+    fontSize: 21,
+    fontWeight: "bold",
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  textSubHead: {
+    flexDirection: "row",
+    fontSize: 15,
+    // fontWeight: "bold",
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  headLine: {
+    flexDirection: "row",
+    width: "100%",
+    height: 110,
+    backgroundColor: "#8E2835",
+  },
+  textHeadline: {
+    flexDirection: "row",
+    fontSize: 20,
+    fontWeight: "bold",
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "black",
+  },
+  searchBar: {
+    top: 40,
+    left: -120,
+    width: "100%",
+  },
+  Kagan: {
+    top: 90,
+    left: 40,
+  },
+  grammar: {
+    top: 70,
+    left: 40,
+  },
+  pronun: {
+    top: 100,
+    left: 40,
+  },
+  textKagan: {
+    flexDirection: "row",
+    fontSize: 15,
+    fontWeight: "bold",
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "black",
+  },
+  Abutton: {
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    width: 150,
+    top: -120,
+    backgroundColor: "#8E2835",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  buttonVocab: {
+    alignSelf: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    width: "90%",
+    backgroundColor: "#dadada",
+    top: -70,
+    left: -40,
+    height: 280,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    borderColor: "black",
+  },
+  buttonGrammar: {
+    alignSelf: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    width: "90%",
+    backgroundColor: "#dadada",
+    top: -30,
+    left: -40,
+    height: 300,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    borderColor: "black",
+  },
+  buttonPronun: {
+    alignSelf: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    width: "90%",
+    backgroundColor: "#dadada",
+    top: -40,
+    left: -40,
+    height: 105,
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+    borderBottomRightRadius: 7,
+    borderBottomLeftRadius: 7,
+    borderColor: "black",
+  },
+  Vocab: {
+    top: 10,
+    left: -20,
+    paddingBottom: 20,
+  },
+  VocabSubSub: {
+    top: 5,
+    left: -10,
+  },
+  VocabSub: {
+    top: 5,
+    left: -10,
+  },
+  textVocab: {
+    fontSize: 13,
+    margin: 10,
+    fontStyle: "italic",
+    //lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "black",
+  },
+  textVocabSub: {
+    fontSize: 11,
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "black",
+  },
+  textVocabSubSub: {
+    fontSize: 11,
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "#8E2835",
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: "bold",
+    lineHeight: 21,
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  input: {
+    height: 45,
+    width: "90%",
+    backgroundColor: "white",
+    margin: 12,
+    borderWidth: 1,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  buttonAudio: {
+    alignSelf: "center",
+    justifyContent: "center",
+    borderRadius: 50,
+    elevation: 3,
+    width: 50,
+    backgroundColor: "#79222D",
+    top: 300,
+    left: 130,
+    height: 50,
+    borderColor: "black",
+  },
+});

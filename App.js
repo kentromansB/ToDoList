@@ -8,6 +8,7 @@ import axios from "axios";
 import MainScreen from './components/Main'
 import RegisterScreen from './components/auth/Register'
 import LoginScreen from './components/auth/Login'
+import NewTaskScreen from "./components/main/Tasks/NewTask";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ export class App extends Component {
               name="Register"
               component={RegisterScreen}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="NewTask"
+              component={NewTaskScreen}
+              options={{ headerShown: true, title: "Create Task" }}
             />
 
           </Stack.Navigator>

@@ -32,7 +32,7 @@ export class Main extends Component {
           
         }}
       >
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Home"
           navigation = {this.props.navigation}
           listeners={({ navigation }) => ({
@@ -47,7 +47,7 @@ export class Main extends Component {
             ),
           }}
           children={() => <HomeScreen  />}
-        />
+        /> */}
         <Tab.Screen
           name="Tasks"
           component={TaskScreen}
