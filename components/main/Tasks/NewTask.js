@@ -58,9 +58,7 @@ function NewTask({ currentUser, route, navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.bodycontainer}>
         <View style={{ marginVertical: 15 }}>
-          <View>
-            <Text style={[styles.text, { color: "#000000" }]}></Text>
-          </View>
+                
           <Text style={[{ fontSize: 18 }]}>
             Create tasks and add a deadline to keep you on track with your
             goals.
@@ -93,7 +91,9 @@ function NewTask({ currentUser, route, navigation }) {
           ></TextInput>
         </View>
         <View>
+        <Text style={[styles.text, { fontSize: 16 }]}>Deadline</Text>
           <View style={styles.container}>
+          
           <Text style={{fontSize: 14}}>Date: {date.toDateString()}</Text>
             <TouchableOpacity
             style={[styles.button, { backgroundColor: "#215a88" }]}
@@ -110,7 +110,7 @@ function NewTask({ currentUser, route, navigation }) {
             style={[styles.button, { backgroundColor: "#215a88" }]}
            onPress={showTimepicker}
           >
-            <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
+            <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
               Select Time
             </Text>
           </TouchableOpacity>
@@ -141,7 +141,7 @@ function NewTask({ currentUser, route, navigation }) {
             style={[styles.button, { backgroundColor: "#215a88" }]}
             onPress={() => submit()}
           >
-            <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
+            <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
               Submit
             </Text>
           </TouchableOpacity>

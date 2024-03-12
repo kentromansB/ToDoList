@@ -40,7 +40,7 @@ export class App extends Component {
             <Stack.Screen
               name="NewTask"
               component={NewTaskScreen}
-              options={{ headerShown: true, title: "Create Task" }}
+              options={{ headerShown: true, title: "Task" }}
             />
 
           </Stack.Navigator>
