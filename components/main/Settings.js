@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   StyleSheet,
@@ -12,9 +13,27 @@ import {
 } from "react-native-paper";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import axios from "axios";
 
 
-function Settings() {
+
+
+function Settings({navigation}) {
+  const onLogout = async () =>{
+    try {
+      const token = await AsyncStorage.getItem("token")
+      await axios.post('http://10.0.0.42:3007/api/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      await AsyncStorage.clear();
+      
+      navigation.navigate("Login")
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
  
     // This will render the Basic users functions
     return (

@@ -11,66 +11,51 @@ import {
 
 import { TextInput } from "react-native-paper";
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 function Login({navigation}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState();
+  const [propUsername, setPropUsername] = useState("")
 
-  // function onSignUp() {
-  //     axios.post('/register', {
-  //         username: username,
-  //         password: password
-  //       })
-  //       .then(response => {
-  //         console.log(response.data);
-  //       })
-
-  //   }
-  const fetchApi = async () => {
+  const loginApi = async () => {
     try {
-      const res = await axios.get("http://10.0.0.42:3007/");
-      console.log(res.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const checkUsernameApi = async () => {
-    const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
-    .then(res => {
-        if (res.data.exists) {
-            Alert.alert('User Exists', 'This username is already taken.');
-            console.log(res.data)
-        } else {
-            // Alert.alert('User Does Not Exist', 'You can use this username.');
-            registerApi(username)
-        }
-    })
-    .catch(error => {
-        Alert.alert('Error', 'Failed to check user existence.');
-    });
-};
-
-
-  const registerApi = async () => {
-    try {
-      const res = await axios.post("http://10.0.0.42:3007/api/register", {
+      const res = await axios.post("http://10.0.0.42:3007/api/login", {
         username: username,
         password: password,
       });
-      console.log(res.data);
-      // Show alert message
-      Alert.alert("Registration successful", "You have been registered successfully.");
+      if (res.data.status == 'ok') {
+        Alert.alert('Logged In Successfull');
+        console.log(propUsername)
+        AsyncStorage.setItem('token', res.data.token);
+        AsyncStorage.setItem('username', res.data.username)
+        AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
+
+          navigation.navigate('Main');
+        }
+
+      else{
+        Alert.alert(res.data.data);
+      }
     } catch (error) {
       console.error(error);
+      console.log(res.data);
+      
     }
   };
-  useEffect(() => {
-    fetchApi();
-  }, []);
 
+  async function getData() {
+    const data = await AsyncStorage.getItem('isLoggedIn');
+    console.log
+    console.log(data, 'at app.jsx');
+  
+  }
+  useEffect(()=>{
+    getData();
+    console.log("Hii");
+  },[])
 
   return (
     <ScrollView style={styles.container}>
@@ -101,7 +86,7 @@ function Login({navigation}) {
       <View style={{ paddingTop: 20 }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => checkUsernameApi(data)}
+          onPress={() => loginApi(data)}
         >
           <Text style={styles.text}>Sign In</Text>
         </TouchableOpacity>

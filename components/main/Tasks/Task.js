@@ -22,6 +22,8 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import EditTaskScreen from "./EditTask";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
@@ -40,10 +42,23 @@ const messages = [
   "No matter what you're doing, try to work at that task like it's your dream job. - Russell Simmons",
 ];
 
-function Task({ currentUser, route, navigation }) {
+function Task({ route, navigation }) {
   const [datalist, setDatalist] = useState("");
-  const { language } = route?.params ?? {};
+  const [userName, setUsername] = useState("");
+  
   const [motd, setMotd] = useState("");
+
+//Fetch User
+  async function getUser() {
+    const username = await AsyncStorage.getItem("username");
+    console.log(username, "at app.jsx");
+    setUsername(username)
+    
+  }
+  useEffect(() => {
+    getUser();
+  }, []);
+// Generate Message of the day
   const generateMotd = () => {
     const randomIndex = Math.floor(Math.random() * messages.length);
     setMotd(messages[randomIndex]);
@@ -52,36 +67,12 @@ function Task({ currentUser, route, navigation }) {
   useEffect(() => {
     generateMotd();
   }, []);
-
-  // useEffect(() => {
-  //   setDatalist(currentUser);
-  // }, [currentUser]);
-  // useEffect(() => {
-  //   //used to fetch the name of the current user.
-  //   const unsubscribe = navigation.addListener("focus", () => {
-  //     firebase
-  //       .firestore()
-  //       .collection("users")
-  //       .doc(firebase.auth().currentUser.uid)
-  //       .get()
-  //       .then((snapshot) => {
-
-  //         if (snapshot.exists) {
-  //           let currentUser = snapshot.data();
-  //           setDatalist(currentUser);
-  //         } else {
-  //         }
-  //       });
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
-
+  
   return (
     <NavigationContainer independent={true}>
       <View style={styles.container}>
         <View style={styles.innercontainer}>
-          <Text style={styles.textHead}>Welcome, </Text>
+          <Text style={styles.textHead}>Welcome {userName}, </Text>
           <Text style={styles.textSubHead}>Message of the Day</Text>
           <Text style={styles.textreg}>{motd}</Text>
         </View>
@@ -91,7 +82,7 @@ function Task({ currentUser, route, navigation }) {
           name="TopTab"
           component={TopTab}
           options={{ headerShown: false }}
-          initialParams={{ data: language, currentUser: currentUser }}
+          initialParams={{ username : userName }}
         />
         <Stack.Screen
           name="EditTask"

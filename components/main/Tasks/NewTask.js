@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -14,6 +14,7 @@ import {
   Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function NewTask({ currentUser, route, navigation }) {
   const [taskName, setTaskName] = useState("");
@@ -23,6 +24,18 @@ function NewTask({ currentUser, route, navigation }) {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const [userName, setUsername] = useState("")
+
+  //Fetch User
+  async function getUser() {
+    const username = await AsyncStorage.getItem("username");
+    console.log(username, "at app.jsx");
+    setUsername(username)
+    
+  }
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const showMode = (currentMode) => {
     setShow(true);
