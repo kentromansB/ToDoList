@@ -10,7 +10,6 @@ import {
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-
 // import CameraScreen from "./Contribution";
 // import Contribution from "./Contribution";
 
@@ -33,50 +32,6 @@ class AddButton extends Component {
   };
 
   render() {
-    // const cameraStyle = {
-    //   transform: [
-    //     { scale: this.animation },
-    //     {
-    //       translateY: this.animation.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: [0, -60],
-    //       }),
-    //     },
-    //   ],
-    // };
-    // const micStyle = {
-    //   transform: [
-    //     { scale: this.animation },
-    //     {
-    //       translateY: this.animation.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: [0, -110],
-    //       }),
-    //     },
-    //   ],
-    // };
-    // const textStyle = {
-    //   transform: [
-    //     { scale: this.animation },
-    //     {
-    //       translateY: this.animation.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: [0, -160],
-    //       }),
-    //     },
-    //   ],
-    // };
-    // const rotation = {
-    //   transform: [
-    //     {
-    //       rotate: this.animation.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: ["0deg", "45deg"],
-    //       }),
-    //     },
-    //   ],
-    // };
-
     return (
       <View style={[styles.container, this.props.style]}>
         <TouchableWithoutFeedback>

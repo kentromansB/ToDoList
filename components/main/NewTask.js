@@ -15,31 +15,55 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 function NewTask({ currentUser, route, navigation }) {
-  const [taskName, setTaskName] = useState("");
+  const [title, setTitle] = useState("");
   const [convertedLanguage, setConvertedLanguage] = useState("");
   const [history, setHistory] = useState("");
-  const [about, setAbout] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [userName, setUsername] = useState("")
+  const [username, setUsername] = useState("");
+  const [user_id, setUserId] = useState("");
+  const [data, setData] = useState();
 
   //Fetch User
   async function getUser() {
-    const username = await AsyncStorage.getItem("username");
-    console.log(username, "at app.jsx");
-    setUsername(username)
+    const user = await AsyncStorage.getItem("username");
+    const id = await AsyncStorage.getItem("user_id");
+    const uid = JSON.parse(id)
+    const userName = JSON.parse(user)
+    setUsername(userName)
+    setUserId(uid)
+    console.log(userName, "at app.jsx");
     
   }
   useEffect(() => {
     getUser();
   }, []);
+  
+  const createTask = async () => {
+    try {
+      const res = await axios.post("http://10.0.0.42:3007/api/createTask", {
+        title: title,
+        description: description,
+        deadline: date.toDateString(),
+        completed: "false",
+        username: username,
+        user_id: user_id,
+      });
+      console.log(res.data);
+      // Show alert message
+      Alert.alert("Registration successful", "You have been registered successfully.");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const showMode = (currentMode) => {
+  const showMode = () => {
     setShow(true);
-    setMode(currentMode);
   };
 
   const onChange = (event, selectedDate) => {
@@ -48,24 +72,7 @@ function NewTask({ currentUser, route, navigation }) {
     setDate(currentDate);
   };
 
-  const showDatepicker = () => {
-    showMode("date");
-  };
 
-  const showTimepicker = () => {
-    showMode("time");
-  };
-
-  const Capitalize = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
-  //   const filteredLanguage = Capitalize(language);
-  //   const filteredNote = Capitalize(note);
-
-  const submit = async () => {
-    saveUserData();
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -84,7 +91,7 @@ function NewTask({ currentUser, route, navigation }) {
             style={styles.input}
             multiline={true}
             autoCapitalize="none"
-            onChangeText={() => setTaskName()}
+            onChangeText={(title) => setTitle(title)}
           />
         </View>
         <View>
@@ -100,7 +107,7 @@ function NewTask({ currentUser, route, navigation }) {
               { height: 180 },
               { paddingHorizontal: 10, flexDirection: "row" },
             ]}
-            onChangeText={() => setAbout()}
+            onChangeText={(description) => setDescription(description)}
           ></TextInput>
         </View>
         <View>
@@ -110,29 +117,20 @@ function NewTask({ currentUser, route, navigation }) {
           <Text style={{fontSize: 14}}>Date: {date.toDateString()}</Text>
             <TouchableOpacity
             style={[styles.button, { backgroundColor: "#215a88" }]}
-           onPress={showDatepicker}
+           onPress={showMode}
           >
             <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
               Select Date
             </Text>
           </TouchableOpacity>
           </View>
-          <View style={styles.container}>
-          <Text style={{fontSize: 14}}>Time: {date.toLocaleTimeString()}</Text>
-            <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#215a88" }]}
-           onPress={showTimepicker}
-          >
-            <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
-              Select Time
-            </Text>
-          </TouchableOpacity>
+    
           </View>
           {show && (
             <DateTimePicker
               testID="dateTimePicker"
               value={date}
-              mode={mode}
+              mode="date"
               is24Hour={true}
               display="default"
               onChange={onChange}
@@ -152,14 +150,14 @@ function NewTask({ currentUser, route, navigation }) {
         >
           <TouchableOpacity
             style={[styles.button, { backgroundColor: "#215a88" }]}
-            onPress={() => submit()}
+            onPress={() => createTask(data)}
           >
             <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
               Submit
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      
     </ScrollView>
   );
 }

@@ -17,10 +17,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AllTasksScreen from "./AllTasks";
 import CompletedTasksScreen from "./CompletedTasks";
 import PendingScreen from "./PendingTasks";
+import EditTaskScreen from "./EditTask";
 
 import { NavigationContainer } from "@react-navigation/native";
-
-import EditTaskScreen from "./EditTask";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -44,21 +43,25 @@ const messages = [
 
 function Task({ route, navigation }) {
   const [datalist, setDatalist] = useState("");
-  const [userName, setUsername] = useState("");
-  
+  const [username, setUsername] = useState("");
+  const [user_id, setUserId] = useState("");
   const [motd, setMotd] = useState("");
+  const [show, setShow] = useState(true);
 
-//Fetch User
+  //Fetch User
   async function getUser() {
-    const username = await AsyncStorage.getItem("username");
-    console.log(username, "at app.jsx");
-    setUsername(username)
-    
+    const user = await AsyncStorage.getItem("username");
+    const id = await AsyncStorage.getItem("user_id");
+    const uid = JSON.parse(id);
+    const userName = JSON.parse(user);
+    setUsername(userName);
+    setUserId(uid);
+    console.log(userName, "at app.jsx");
   }
   useEffect(() => {
     getUser();
   }, []);
-// Generate Message of the day
+  // Generate Message of the day
   const generateMotd = () => {
     const randomIndex = Math.floor(Math.random() * messages.length);
     setMotd(messages[randomIndex]);
@@ -67,12 +70,12 @@ function Task({ route, navigation }) {
   useEffect(() => {
     generateMotd();
   }, []);
-  
+
   return (
     <NavigationContainer independent={true}>
       <View style={styles.container}>
         <View style={styles.innercontainer}>
-          <Text style={styles.textHead}>Welcome {userName}, </Text>
+          <Text style={styles.textHead}>Welcome {username}, </Text>
           <Text style={styles.textSubHead}>Message of the Day</Text>
           <Text style={styles.textreg}>{motd}</Text>
         </View>
@@ -82,7 +85,7 @@ function Task({ route, navigation }) {
           name="TopTab"
           component={TopTab}
           options={{ headerShown: false }}
-          initialParams={{ username : userName }}
+          initialParams={{ username: username }}
         />
         <Stack.Screen
           name="EditTask"
@@ -99,17 +102,15 @@ function Task({ route, navigation }) {
         />
       </Stack.Navigator>
 
+      {/* {route?.name !== "UpdateTask" && ( */}
       <Pressable
         style={styles.button}
         onPress={() => navigation.navigate("NewTask")}
-        //onPress={() => navigation.navigate("NewContribution")}
       >
         <MaterialCommunityIcons name="plus" color={"#ffffff"} size={40} />
       </Pressable>
+      {/* )} */}
     </NavigationContainer>
-    // <View>
-    //   <Text>{language}</Text>
-    // </View>
   );
 }
 
@@ -182,15 +183,6 @@ function TopTab({ route, navigation }) {
         }}
         children={(props) => <CompletedTasksScreen />}
       />
-      {/* <Tab.Screen
-          name="User"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account-star" color={color} size={26} />
-            )
-          }}
-          children={(props) => <FeedScreen language={data} currentUser = {currentUser}  {...props} />}
-        /> */}
     </Tab.Navigator>
   );
 }
@@ -205,7 +197,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     marginTop: 30,
-    marginBottom: -360,
+    marginBottom: -450,
     flex: 1,
   },
   innercontainer: {

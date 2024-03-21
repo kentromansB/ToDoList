@@ -6,56 +6,62 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
 } from "react-native";
 
 import { TextInput } from "react-native-paper";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-function Login({navigation}) {
+function Login({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState();
-  const [propUsername, setPropUsername] = useState("")
+  const [propUsername, setPropUsername] = useState("");
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setUsername(null);
+      setPassword(null);
+      console.log("2", data);
+    });
+    return unsubscribe;
+  }, []);
   const loginApi = async () => {
     try {
       const res = await axios.post("http://10.0.0.42:3007/api/login", {
         username: username,
         password: password,
       });
-      if (res.data.status == 'ok') {
-        Alert.alert('Logged In Successfull');
-        console.log(propUsername)
-        AsyncStorage.setItem('token', res.data.token);
-        AsyncStorage.setItem('username', res.data.username)
-        AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
-
-          navigation.navigate('Main');
-        }
-
-      else{
+      if (res.data.status == "ok") {
+        Alert.alert("Logged In Successfull");
+        console.log(res.data);
+        AsyncStorage.setItem("token", res.data.token);
+        AsyncStorage.setItem("username", JSON.stringify(res.data.username));
+        AsyncStorage.setItem("user_id", JSON.stringify(res.data.user_id));
+        AsyncStorage.setItem("isLoggedIn", JSON.stringify(true));
+        navigation.push("Main");
+      } else {
         Alert.alert(res.data.data);
       }
     } catch (error) {
       console.error(error);
       console.log(res.data);
-      
     }
   };
 
   async function getData() {
-    const data = await AsyncStorage.getItem('isLoggedIn');
-    console.log
-    console.log(data, 'at app.jsx');
-  
+    const data = await AsyncStorage.getItem("isLoggedIn");
+    console.log;
+    console.log(data, "at app.jsx");
   }
-  useEffect(()=>{
+  useEffect(() => {
     getData();
+    setUsername("");
+    setPassword("");
     console.log("Hii");
-  },[])
+    console.log(data);
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -66,6 +72,7 @@ function Login({navigation}) {
       <View style={styles.loginGroup}>
         <View style={styles.space}>
           <TextInput
+            value={username}
             label="Username"
             activeUnderlineColor="#215a88"
             placeholder={"username"}
@@ -76,6 +83,7 @@ function Login({navigation}) {
         <View style={styles.space}>
           <TextInput
             label="Password"
+            value={password}
             iconSize={25}
             iconColor={"#222222"}
             onChangeText={(password) => setPassword(password)}
@@ -84,10 +92,7 @@ function Login({navigation}) {
         </View>
       </View>
       <View style={{ paddingTop: 20 }}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => loginApi(data)}
-        >
+        <TouchableOpacity style={styles.button} onPress={() => loginApi(data)}>
           <Text style={styles.text}>Sign In</Text>
         </TouchableOpacity>
       </View>

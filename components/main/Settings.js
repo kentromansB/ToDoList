@@ -1,58 +1,51 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
-
-import {
-  Title,
-  Text,
-  TouchableRipple,
-} from "react-native-paper";
+import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Title, Text, TouchableRipple } from "react-native-paper";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
 
-
-
-
-function Settings({navigation}) {
-  const onLogout = async () =>{
+function Settings({ navigation }) {
+  function onLogout() {
     try {
-      const token = await AsyncStorage.getItem("token")
-      await axios.post('http://10.0.0.42:3007/api/logout', {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const token = AsyncStorage.getItem("token");
+      axios.post(
+        "http://10.0.0.42:3007/api/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
-      await AsyncStorage.clear();
-      
-      navigation.navigate("Login")
+      );
+      AsyncStorage.setItem("isLoggedIn", "");
+      AsyncStorage.setItem("token", "");
+      navigation.push("Login");
+
+      console.log(token, "at app.jsx");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
+  }
+  const logoutNavigate = async () => {
+    console.log();
   };
- 
-    // This will render the Basic users functions
-    return (
-      <SafeAreaView style={styles.container}>
-       
 
-        <View style={styles.menuWrapper}>
-          <TouchableRipple onPress={() => onLogout()}>
-            <View style={styles.menuItem}>
-              <Icon name="logout" color="#777777" size={25} />
-              <Text style={styles.menuItemText}>Logout</Text>
-            </View>
-          </TouchableRipple>
-        </View>
-      </SafeAreaView>
-    );
-  
+  // This will render the Basic users functions
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.menuWrapper}>
+        <TouchableRipple onPress={() => onLogout()}>
+          <View style={styles.menuItem}>
+            <Icon name="logout" color="#777777" size={25} />
+            <Text style={styles.menuItemText}>Logout</Text>
+          </View>
+        </TouchableRipple>
+      </View>
+    </SafeAreaView>
+  );
 }
-
 
 export default Settings;
 
