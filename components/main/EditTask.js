@@ -16,18 +16,20 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import Checkbox from "expo-checkbox";
 
-function UpdateTaskScreen({ currentUser, route, navigation }) {
-  const [title, setTitle] = useState("");
-  const [convertedLanguage, setConvertedLanguage] = useState("");
-  const [history, setHistory] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+function EditTask({ currentUser, route, navigation }) {
+  const { data } = route?.params;
+  console.log(data);
+  const [title, setTitle] = useState(data?.title);
+  const [description, setDescription] = useState(data?.description);
+  const [date, setDate] = useState(new Date(data?.deadline));
+  const [taskID, setTaskID] = useState(data?._id);
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [user_id, setUserId] = useState("");
-  // const { data } = route?.params;
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
   //Fetch User
   async function getUser() {
@@ -43,16 +45,19 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
     getUser();
   }, []);
 
-  const createTask = async () => {
+  const updateTask = async (taskID, updateTask) => {
     try {
-      const res = await axios.post("http://10.0.0.42:3007/api/createTask", {
-        title: title,
-        description: description,
-        deadline: date.toDateString(),
-        completed: "false",
-        username: username,
-        user_id: user_id,
-      });
+      const res = await axios.put(
+        "http://10.0.0.42:3007/api/updateTask/${taskID}",
+        {
+          title: title,
+          description: description,
+          deadline: date.toDateString(),
+          completed: "false",
+          username: username,
+          user_id: user_id,
+        }
+      );
       console.log(res.data);
       // Show alert message
       Alert.alert(
@@ -79,8 +84,7 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
       <View style={styles.bodycontainer}>
         <View style={{ marginVertical: 15 }}>
           <Text style={[{ fontSize: 18 }]}>
-            Create tasks and add a deadline to keep you on track with your
-            goals.
+            Edit task details, deadline or mark the task as completed.
           </Text>
         </View>
 
@@ -90,6 +94,7 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
             style={styles.input}
             multiline={true}
             autoCapitalize="none"
+            value={title}
             onChangeText={(title) => setTitle(title)}
           />
         </View>
@@ -101,6 +106,7 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
           </Text>
           <TextInput
             multiline={true}
+            value={description}
             style={[
               styles.addButton,
               { height: 180 },
@@ -112,7 +118,9 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
         <View>
           <Text style={[styles.text, { fontSize: 16 }]}>Deadline</Text>
           <View style={styles.container}>
-            <Text style={{ fontSize: 14 }}>Date: {date.toDateString()}</Text>
+            <Text style={{ fontSize: 14 }}>
+              Deadline: {date.toDateString()}
+            </Text>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: "#215a88" }]}
               onPress={showMode}
@@ -134,6 +142,18 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
           />
         )}
       </View>
+      {data?.completed == false ? (
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            style={styles.checkbox}
+            value={toggleCheckBox}
+            onValueChange={(newValue) => setToggleCheckBox(newValue)}
+            color={toggleCheckBox ? "#215a88" : undefined}
+          />
+
+          <Text style={styles.guidelines}> Mark this task as COMPLETED </Text>
+        </View>
+      ) : null}
 
       <View
         style={{
@@ -156,7 +176,7 @@ function UpdateTaskScreen({ currentUser, route, navigation }) {
   );
 }
 
-export default UpdateTaskScreen;
+export default EditTask;
 const styles = StyleSheet.create({
   container: {
     alignContent: "center",
@@ -197,5 +217,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     paddingVertical: 15,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    marginVertical: 10,
+    alignItems: "center",
+    //marginRight: 50,
+    //paddingRight: 50,
+    alignContent: "center",
+    justifyContent: "center",
+    paddingTop: 20,
   },
 });

@@ -42,11 +42,9 @@ const messages = [
 ];
 
 function Task({ route, navigation }) {
-  const [datalist, setDatalist] = useState("");
   const [username, setUsername] = useState("");
   const [user_id, setUserId] = useState("");
   const [motd, setMotd] = useState("");
-  const [show, setShow] = useState(true);
 
   //Fetch User
   async function getUser() {
@@ -102,14 +100,12 @@ function Task({ route, navigation }) {
         />
       </Stack.Navigator>
 
-      {/* {route?.name !== "UpdateTask" && ( */}
       <Pressable
         style={styles.button}
         onPress={() => navigation.navigate("NewTask")}
       >
         <MaterialCommunityIcons name="plus" color={"#ffffff"} size={40} />
       </Pressable>
-      {/* )} */}
     </NavigationContainer>
   );
 }

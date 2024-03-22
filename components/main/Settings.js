@@ -21,7 +21,7 @@ function Settings({ navigation }) {
       );
       AsyncStorage.setItem("isLoggedIn", "");
       AsyncStorage.setItem("token", "");
-      navigation.push("Login");
+      logoutNavigate();
 
       console.log(token, "at app.jsx");
     } catch (error) {
@@ -29,6 +29,7 @@ function Settings({ navigation }) {
     }
   }
   const logoutNavigate = async () => {
+    await navigation.navigate("Login");
     console.log();
   };
 

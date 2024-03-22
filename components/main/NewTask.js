@@ -33,17 +33,16 @@ function NewTask({ currentUser, route, navigation }) {
   async function getUser() {
     const user = await AsyncStorage.getItem("username");
     const id = await AsyncStorage.getItem("user_id");
-    const uid = JSON.parse(id)
-    const userName = JSON.parse(user)
-    setUsername(userName)
-    setUserId(uid)
+    const uid = JSON.parse(id);
+    const userName = JSON.parse(user);
+    setUsername(userName);
+    setUserId(uid);
     console.log(userName, "at app.jsx");
-    
   }
   useEffect(() => {
     getUser();
   }, []);
-  
+
   const createTask = async () => {
     try {
       const res = await axios.post("http://10.0.0.42:3007/api/createTask", {
@@ -56,7 +55,13 @@ function NewTask({ currentUser, route, navigation }) {
       });
       console.log(res.data);
       // Show alert message
-      Alert.alert("Registration successful", "You have been registered successfully.");
+      Alert.alert(
+        "Task Created.",
+        "Don't forget to finish the Task before the deadline!"
+      );
+      navigation.goBack();
+      setTitle(null);
+      setDescription(null);
     } catch (error) {
       console.error(error);
     }
@@ -72,13 +77,10 @@ function NewTask({ currentUser, route, navigation }) {
     setDate(currentDate);
   };
 
-
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.bodycontainer}>
         <View style={{ marginVertical: 15 }}>
-                
           <Text style={[{ fontSize: 18 }]}>
             Create tasks and add a deadline to keep you on track with your
             goals.
@@ -91,6 +93,7 @@ function NewTask({ currentUser, route, navigation }) {
             style={styles.input}
             multiline={true}
             autoCapitalize="none"
+            value={title}
             onChangeText={(title) => setTitle(title)}
           />
         </View>
@@ -102,6 +105,7 @@ function NewTask({ currentUser, route, navigation }) {
           </Text>
           <TextInput
             multiline={true}
+            value={description}
             style={[
               styles.addButton,
               { height: 180 },
@@ -111,53 +115,48 @@ function NewTask({ currentUser, route, navigation }) {
           ></TextInput>
         </View>
         <View>
-        <Text style={[styles.text, { fontSize: 16 }]}>Deadline</Text>
+          <Text style={[styles.text, { fontSize: 16 }]}>Deadline</Text>
           <View style={styles.container}>
-          
-          <Text style={{fontSize: 14}}>Date: {date.toDateString()}</Text>
+            <Text style={{ fontSize: 14 }}>Date: {date.toDateString()}</Text>
             <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#215a88" }]}
-           onPress={showMode}
-          >
-            <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
-              Select Date
-            </Text>
-          </TouchableOpacity>
+              style={[styles.button, { backgroundColor: "#215a88" }]}
+              onPress={showMode}
+            >
+              <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
+                Select Date
+              </Text>
+            </TouchableOpacity>
           </View>
-    
-          </View>
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode="date"
-              is24Hour={true}
-              display="default"
-              onChange={onChange}
-            />
-          )}
-          
-          
         </View>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            onChange={onChange}
+          />
+        )}
+      </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            flex: 1,
-            justifyContent: "center",
-            marginVertical: 25,
-          }}
+      <View
+        style={{
+          flexDirection: "row",
+          flex: 1,
+          justifyContent: "center",
+          marginVertical: 25,
+        }}
+      >
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#215a88" }]}
+          onPress={() => createTask(data)}
         >
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#215a88" }]}
-            onPress={() => createTask(data)}
-          >
-            <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-        </View>
-      
+          <Text style={[styles.text, { fontSize: 15, color: "white" }]}>
+            Submit
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }

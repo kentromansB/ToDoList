@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SplashScreen from "react-native-splash-screen";
 
 import MainScreen from "./components/Main";
 import RegisterScreen from "./components/auth/Register";
@@ -16,16 +15,16 @@ const Stack = createStackNavigator();
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   async function getData() {
     const data = await AsyncStorage.getItem("isLoggedIn");
-    const username = await AsyncStorage.getItem("username");
     console.log(data, "at app.jsx");
     setIsLoggedIn(data);
   }
 
-  useEffect(() => {
-    getData();
-  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator>

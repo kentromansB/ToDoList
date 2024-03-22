@@ -17,6 +17,7 @@ function Login({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [propUsername, setPropUsername] = useState("");
 
   useEffect(() => {
@@ -83,11 +84,16 @@ function Login({ navigation }) {
         <View style={styles.space}>
           <TextInput
             label="Password"
-            value={password}
-            iconSize={25}
-            iconColor={"#222222"}
+            secureTextEntry={secureTextEntry}
             onChangeText={(password) => setPassword(password)}
-            activeUnderlineColor="#215a88"
+            value={password}
+            activeUnderlineColor="#215A88"
+            right={
+              <TextInput.Icon
+                name={secureTextEntry ? "eye" : "eye-off"}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+              />
+            }
           />
         </View>
       </View>
@@ -161,64 +167,12 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#215a88",
   },
-  buttonGoogle: {
-    alignSelf: "flex-start",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 10,
-    elevation: 1,
-    width: "80%",
-    backgroundColor: "#dadada",
-    top: 165,
-  },
+
   text: {
     alignSelf: "center",
     fontSize: 18,
 
     letterSpacing: 0.25,
     color: "white",
-  },
-  logo: {
-    width: 16,
-    height: 16,
-    right: 10,
-  },
-  textGoogle: {
-    alignSelf: "center",
-    paddingLeft: 40,
-    paddingTop: 15,
-    fontSize: 18,
-
-    lineHeight: 21,
-    letterSpacing: 0.25,
-    color: "black",
-    position: "absolute",
-  },
-  textGrey: {
-    fontSize: 15,
-    color: "grey",
-    //fontWeight: "bold",
-    //left: 50,
-  },
-  textMini: {
-    fontSize: 12,
-    color: "gray",
-    fontWeight: "bold",
-    left: 200,
-  },
-  textSignUp: {
-    fontSize: 14,
-    color: "#215a88",
-    fontWeight: "bold",
-  },
-  input: {
-    height: 45,
-    width: "100%",
-    marginTop: 8,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "gray",
-    paddingLeft: 10,
   },
 });
