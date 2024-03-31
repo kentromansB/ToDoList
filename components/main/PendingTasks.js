@@ -116,12 +116,16 @@ function CompletedTasks({ route, navigation }) {
       <View style={styles.itemContainer}>
         <View style={{ flexDirection: "column", flex: 1 }}>
           <View style={styles.itemBody}>
-            <Text style={styles.itemsName}>{item?.title}</Text>
+            <Text style={[styles.itemsName, { fontWeight: "bold" }]}>
+              {item?.title}
+            </Text>
             <Text>{item?.description}</Text>
           </View>
 
           <View style={[styles.itemBody]}>
-            <Text style={{ fontSize: 12 }}>Due: {deadline.toDateString()}</Text>
+            <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+              Due: {deadline.toDateString()}
+            </Text>
           </View>
         </View>
 

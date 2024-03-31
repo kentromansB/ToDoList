@@ -85,6 +85,7 @@ function CompletedTasks({ route, navigation }) {
       setTasks(res.data);
       setFilteredDataSource(res.data);
       setRefreshing(false);
+      console.log(tasks);
     } catch (error) {
       console.error(error);
     }
@@ -100,8 +101,8 @@ function CompletedTasks({ route, navigation }) {
   const searchFilterFunction = (text) => {
     const newData = tasks.filter(
       (item) =>
-        item.title.toUpperCase().startsWith(text.toUpperCase()) ||
-        item.description.toUpperCase().startsWith(text.toUpperCase())
+        item.title.toUpperCase().includes(text.toUpperCase()) ||
+        item.description.toUpperCase().includes(text.toUpperCase())
     );
 
     setFilteredDataSource(newData);
@@ -114,12 +115,16 @@ function CompletedTasks({ route, navigation }) {
       <View style={styles.itemContainer}>
         <View style={{ flexDirection: "column", flex: 1 }}>
           <View style={styles.itemBody}>
-            <Text style={styles.itemsName}>{item?.title}</Text>
+            <Text style={[styles.itemsName, { fontWeight: "bold" }]}>
+              {item?.title}
+            </Text>
             <Text>{item?.description}</Text>
           </View>
 
           <View style={[styles.itemBody]}>
-            <Text style={{ fontSize: 12 }}>Due: {deadline.toDateString()}</Text>
+            <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+              Due: {deadline.toDateString()}
+            </Text>
           </View>
         </View>
 
