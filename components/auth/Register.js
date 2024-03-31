@@ -6,16 +6,24 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
 } from "react-native";
 
 import { TextInput } from "react-native-paper";
 import axios from "axios";
+import PassMeter from "react-native-passmeter";
 
+const MAX_LEN = 15,
+  MIN_LEN = 6,
+  PASS_LABELS = ["Too Short", "Weak", "Normal", "Strong", "Secure"];
 
-function Register({navigation}) {
+function Register({ navigation }) {
   const [username, setUsername] = useState("");
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [data, setData] = useState();
 
   // function onSignUp() {
@@ -28,39 +36,42 @@ function Register({navigation}) {
   //       })
 
   //   }
- 
 
-//   const checkUsernameApi = async () => {
-//     const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
-//     .then(res => {
-//         if (res.data.exists) {
-//             Alert.alert('User Exists', 'This username is already taken.');
-//             console.log(res.data)
-//         } else {
-//             // Alert.alert('User Does Not Exist', 'You can use this username.');
-//             registerApi(username)
-//         }
-//     })
-//     .catch(error => {
-//         Alert.alert('Error', 'Failed to check user existence.');
-//     });
-// };
-
+  //   const checkUsernameApi = async () => {
+  //     const res = await axios.post('http://10.0.0.42:3007/api/checkUsername', { username: username })
+  //     .then(res => {
+  //         if (res.data.exists) {
+  //             Alert.alert('User Exists', 'This username is already taken.');
+  //             console.log(res.data)
+  //         } else {
+  //             // Alert.alert('User Does Not Exist', 'You can use this username.');
+  //             registerApi(username)
+  //         }
+  //     })
+  //     .catch(error => {
+  //         Alert.alert('Error', 'Failed to check user existence.');
+  //     });
+  // };
 
   const registerApi = async () => {
     try {
       const res = await axios.post("http://10.0.0.42:3007/api/register", {
         username: username,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
         password: password,
       });
       console.log(res.data);
       // Show alert message
-      Alert.alert("Registration successful", "You have been registered successfully.");
+      Alert.alert(
+        "Registration successful",
+        "You have been registered successfully."
+      );
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   return (
     <ScrollView style={styles.container}>
@@ -71,22 +82,64 @@ function Register({navigation}) {
       <View style={styles.loginGroup}>
         <View style={styles.space}>
           <TextInput
+            label="Email"
+            activeUnderlineColor="#215a88"
+            autoCapitalize="none"
+            placeholder={"sample@email.com"}
+            inputMode="email"
+            onChangeText={(email) => setEmail(email)}
+          />
+        </View>
+        <View style={styles.space}>
+          <TextInput
             label="Username"
             activeUnderlineColor="#215a88"
             placeholder={"username"}
             onChangeText={(username) => setUsername(username)}
           />
         </View>
+        <View style={styles.space}>
+          <TextInput
+            label="First name"
+            activeUnderlineColor="#215a88"
+            placeholder={"firstname"}
+            onChangeText={(firstname) => setFirstName(firstname)}
+          />
+        </View>
+        <View style={styles.space}>
+          <TextInput
+            label="Last name"
+            activeUnderlineColor="#215a88"
+            placeholder={"lastname"}
+            onChangeText={(lastname) => setLastName(lastname)}
+          />
+        </View>
 
         <View style={styles.space}>
           <TextInput
             label="Password"
+            autoCapitalize="none"
             iconSize={25}
+            secureTextEntry={secureTextEntry}
             iconColor={"#222222"}
             onChangeText={(password) => setPassword(password)}
             activeUnderlineColor="#215a88"
+            right={
+              <TextInput.Icon
+                name={secureTextEntry ? "eye" : "eye-off"}
+                onPress={() => setSecureTextEntry(!secureTextEntry)}
+              />
+            }
           />
         </View>
+        <PassMeter
+          style={styles.passmeter}
+          showLabels
+          password={password}
+          maxLength={MAX_LEN}
+          minLength={MIN_LEN}
+          labels={PASS_LABELS}
+        />
       </View>
       <View style={{ paddingTop: 20 }}>
         <TouchableOpacity

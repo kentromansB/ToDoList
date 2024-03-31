@@ -1,102 +1,83 @@
-import React, { Component, useState } from "react";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { Pressable, StyleSheet } from "react-native";
-const Tab = createMaterialBottomTabNavigator();
+import React, { Component, useEffect, useState } from "react";
+import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../AuthContext";
 
-// import TaskScreen from "./main/Task";
-import AllTasksScreen from "./main/AllTasks";
-import CompletedTasksScreen from "./main/CompletedTasks";
-import PendingScreen from "./main/PendingTasks";
-// import EditTaskScreen from "./EditTask";
-import SettingsScreen from "./main/Settings";
+import RegisterScreen from "./auth/Register";
+import LoginScreen from "./auth/Login";
+import NewTaskScreen from "./main/NewTask";
+import EditTaskScreen from "./main/EditTask";
+import HomeScreen from "./HomeScreen";
 
-function Main() {
+const Stack = createStackNavigator();
+function App() {
+  const { isLoggedIn } = useAuth();
+  console.log(isLoggedIn);
+
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
+  // async function getData() {
+  //   const data = await AsyncStorage.getItem("isLoggedIn");
+  //   console.log(data, "at app.jsx");
+
+  // }
+
   return (
-    <Tab.Navigator
-      initialRouteName="Main"
-      activeColor="#215A88"
-      inactiveColor="#B2B2B2"
-      barStyle={{ backgroundColor: "white" }}
-      tabBarOptions={{
-        showLabel: true, // This option always shows labels
-      }}
-    >
-      <Tab.Screen
-        name="AllTasks"
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("AllTasks");
-          },
-        })}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="view-dashboard"
-              color={color}
-              size={26}
+    <NavigationContainer>
+      <Stack.Navigator>
+        {isLoggedIn ? (
+          <Stack.Group>
+            <Stack.Screen
+              name="HomeScreen"
+              component={HomeScreen}
+              options={{ headerShown: false }}
             />
-          ),
-          tabBarLabel: "All Tasks",
-        }}
-        children={(props) => <AllTasksScreen {...props} />}
-      />
-
-      <Tab.Screen
-        name="PendingTasks"
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("PendingTasks");
-          },
-        })}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="clock-fast" color={color} size={26} />
-          ),
-          tabBarLabel: "Pending",
-        }}
-        children={(props) => <PendingScreen {...props} />}
-      />
-      <Tab.Screen
-        name="CompletedTasks"
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("CompletedTasks");
-          },
-        })}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="format-list-checks"
-              color={color}
-              size={26}
+            <Stack.Screen
+              name="NewTask"
+              component={NewTaskScreen}
+              options={{ headerShown: true, title: "Task" }}
             />
-          ),
-          tabBarLabel: "Completed",
-        }}
-        children={(props) => <CompletedTasksScreen {...props} />}
-      />
-
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        listeners={({ navigation }) => ({
-          tabPress: (event) => {
-            event.preventDefault();
-            navigation.navigate("Settings");
-          },
-        })}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" color={color} size={26} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+            <Stack.Screen
+              name="EditTask"
+              component={EditTaskScreen}
+              options={{ headerShown: true, title: "Task" }}
+            />
+          </Stack.Group>
+        ) : (
+          <Stack.Group>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreen}
+              options={{ headerShown: false }}
+            />
+          </Stack.Group>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-export default Main;
+export default App;
+
+const styles = StyleSheet.create({
+  capture: {
+    //position: "relative",
+    //bottom: 100,
+    right: 10,
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    borderColor: "#263238",
+    borderWidth: 6,
+    alignSelf: "center",
+  },
+});

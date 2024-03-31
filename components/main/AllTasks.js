@@ -119,7 +119,7 @@ function CompletedTasks({ route, navigation }) {
           </View>
 
           <View style={[styles.itemBody]}>
-            <Text style={{ fontSize: 12 }}>{deadline.toDateString()}</Text>
+            <Text style={{ fontSize: 12 }}>Due: {deadline.toDateString()}</Text>
           </View>
         </View>
 

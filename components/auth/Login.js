@@ -12,57 +12,47 @@ import {
 import { TextInput } from "react-native-paper";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { useAuth } from "../../AuthContext";
 
 function Login({ navigation }) {
-  const [username, setUsername] = useState("");
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = useState();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [propUsername, setPropUsername] = useState("");
 
+  const storeToken = async (key, value) => {
+    await SecureStore.setItemAsync(key, value);
+  };
+
+  const handleLogin = () => {
+    console.log(email, password);
+    login(email, password);
+  };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      setUsername(null);
+      setEmail(null);
       setPassword(null);
       console.log("2", data);
     });
     return unsubscribe;
   }, []);
-  const loginApi = async () => {
-    try {
-      const res = await axios.post("http://10.0.0.42:3007/api/login", {
-        username: username,
-        password: password,
-      });
-      if (res.data.status == "ok") {
-        Alert.alert("Logged In Successfull");
-        console.log(res.data);
-        AsyncStorage.setItem("token", res.data.token);
-        AsyncStorage.setItem("username", JSON.stringify(res.data.username));
-        AsyncStorage.setItem("user_id", JSON.stringify(res.data.user_id));
-        AsyncStorage.setItem("isLoggedIn", JSON.stringify(true));
-        navigation.push("Main");
-      } else {
-        Alert.alert(res.data.data);
-      }
-    } catch (error) {
-      console.error(error);
-      console.log(res.data);
-    }
-  };
 
-  async function getData() {
-    const data = await AsyncStorage.getItem("isLoggedIn");
-    console.log;
-    console.log(data, "at app.jsx");
-  }
-  useEffect(() => {
-    getData();
-    setUsername("");
-    setPassword("");
-    console.log("Hii");
-    console.log(data);
-  }, []);
+  // async function getData() {
+  //   const data = await AsyncStorage.getItem("isLoggedIn");
+  //   console.log;
+  //   console.log(data, "at app.jsx");
+  // }
+  // useEffect(() => {
+  //   getData();
+  //   setUsername("");
+  //   setPassword("");
+  //   console.log("Hii");
+  //   console.log(data);
+  // }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -73,17 +63,20 @@ function Login({ navigation }) {
       <View style={styles.loginGroup}>
         <View style={styles.space}>
           <TextInput
-            value={username}
-            label="Username"
+            value={email}
+            label="Email"
             activeUnderlineColor="#215a88"
-            placeholder={"username"}
-            onChangeText={(username) => setUsername(username)}
+            inputMode="email"
+            autoCapitalize="none"
+            placeholder={"sample@email.com"}
+            onChangeText={(email) => setEmail(email)}
           />
         </View>
 
         <View style={styles.space}>
           <TextInput
             label="Password"
+            autoCapitalize="none"
             secureTextEntry={secureTextEntry}
             onChangeText={(password) => setPassword(password)}
             value={password}
@@ -98,7 +91,7 @@ function Login({ navigation }) {
         </View>
       </View>
       <View style={{ paddingTop: 20 }}>
-        <TouchableOpacity style={styles.button} onPress={() => loginApi(data)}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.text}>Sign In</Text>
         </TouchableOpacity>
       </View>
@@ -174,5 +167,10 @@ const styles = StyleSheet.create({
 
     letterSpacing: 0.25,
     color: "white",
+  },
+  textSignUp: {
+    fontSize: 14,
+    color: "#215a88",
+    fontWeight: "bold",
   },
 });

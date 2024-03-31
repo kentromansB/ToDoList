@@ -5,39 +5,41 @@ import { Title, Text, TouchableRipple } from "react-native-paper";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
+import { useAuth } from "../../AuthContext";
 
 function Settings({ navigation }) {
-  function onLogout() {
-    try {
-      const token = AsyncStorage.getItem("token");
-      axios.post(
-        "http://10.0.0.42:3007/api/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      AsyncStorage.setItem("isLoggedIn", "");
-      AsyncStorage.setItem("token", "");
-      logoutNavigate();
+  const { logout } = useAuth();
+  // function onLogout() {
+  //   try {
+  //     const token = AsyncStorage.getItem("token");
+  //     axios.post(
+  //       "http://10.0.0.42:3007/api/logout",
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     AsyncStorage.setItem("isLoggedIn", "");
+  //     AsyncStorage.setItem("token", "");
+  //     logoutNavigate();
 
-      console.log(token, "at app.jsx");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  }
-  const logoutNavigate = async () => {
-    await navigation.navigate("Login");
-    console.log();
-  };
+  //     console.log(token, "at app.jsx");
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //   }
+  // }
+  // const logoutNavigate = async () => {
+  //   await navigation.navigate("Login");
+  //   console.log();
+  // };
 
   // This will render the Basic users functions
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.menuWrapper}>
-        <TouchableRipple onPress={() => onLogout()}>
+        <TouchableRipple onPress={logout}>
           <View style={styles.menuItem}>
             <Icon name="logout" color="#777777" size={25} />
             <Text style={styles.menuItemText}>Logout</Text>

@@ -24,11 +24,9 @@ const messages = [
   "There is nothing so fatal to character as half finished tasks. - David Lloyd George",
   "Tomorrow becomes never. No matter how small the task, take the first step now! - Tim Ferriss",
   "The price of success is hard work, dedication to the job at hand - Vince Lombardi",
-  "Don't search for inspiration when you have a task to do; Just start your work and you will see that it will soon find you. - Charles Ghigna",
   "The smallest task, well done, becomes a miracle of achievement - Og Mandino",
   "Better to complete a small task well, than to do much imperfectly. - Plato",
   "Nothing is more burdensome than an unfinished task. -  Jim Rohn",
-  "To focus our mind on the task at hand-with fierce concentration-m akes for a productive use of time. - R. C. Sproul",
   "No matter what you're doing, try to work at that task like it's your dream job. - Russell Simmons",
 ];
 
@@ -124,7 +122,7 @@ function CompletedTasks({ route, navigation }) {
           </View>
 
           <View style={[styles.itemBody]}>
-            <Text style={{ fontSize: 12 }}>{deadline.toDateString()}</Text>
+            <Text style={{ fontSize: 12 }}>Due: {deadline.toDateString()}</Text>
           </View>
         </View>
 
