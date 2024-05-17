@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+// Will be used as message of the day, I only selected short messages so that the  UI will not get affected
 const messages = [
   "Don't focus on the victory, focus on the task. - Erik Spoelstra.",
   "The greater the effort, the greater the glory. - Pierre Corneille",
@@ -30,7 +31,7 @@ const messages = [
   "No matter what you're doing, try to work at that task like it's your dream job. - Russell Simmons",
 ];
 
-function CompletedTasks({ route, navigation }) {
+function CompletedTasks({ navigation }) {
   const [refreshing, setRefreshing] = useState(true);
   const [tasks, setTasks] = useState("");
   const [user_id, setUserId] = useState("");
@@ -40,7 +41,6 @@ function CompletedTasks({ route, navigation }) {
   const [search, setSearch] = useState("");
 
   //Fetch User
-
   async function getUser() {
     const user = await AsyncStorage.getItem("username");
     const id = await AsyncStorage.getItem("user_id");
@@ -50,6 +50,7 @@ function CompletedTasks({ route, navigation }) {
     setUserId(uid);
     console.log(userName, "at app.jsx");
   }
+  // Will activate function get user whenever the page renders
   useEffect(() => {
     getUser();
   }, []);
@@ -58,7 +59,7 @@ function CompletedTasks({ route, navigation }) {
     const randomIndex = Math.floor(Math.random() * messages.length);
     setMotd(messages[randomIndex]);
   };
-
+  // Will generate a random message of the day whenever the page renders
   useEffect(() => {
     generateMotd();
   }, []);
@@ -68,6 +69,7 @@ function CompletedTasks({ route, navigation }) {
     fetchTask();
   }, []);
 
+  // Function to navigate to edit task with item props as reference
   const updateTaskNavigation = ({ item }) => {
     navigation.navigate("EditTask", { data: item });
   };
@@ -75,13 +77,15 @@ function CompletedTasks({ route, navigation }) {
   //Function that calls the API request from the backend
   async function fetchTask() {
     try {
-      const id = await AsyncStorage.getItem("user_id");
-      const uid = JSON.parse(id);
+      const id = await AsyncStorage.getItem("user_id"); // Fetch user ID
+      const uid = JSON.parse(id); // Parse the fetched user ID
+      // API GET Request to fetch the data from the back end
       const res = await axios.get("http://10.0.0.42:3007/api/fetchTask", {
         params: {
           user_id: uid,
         },
       });
+
       setTasks(res.data);
       setFilteredDataSource(res.data);
       setRefreshing(false);
@@ -98,6 +102,7 @@ function CompletedTasks({ route, navigation }) {
     fetchTask();
   };
 
+  // Search Filter for searching tasks via task title and description
   const searchFilterFunction = (text) => {
     const newData = tasks.filter(
       (item) =>

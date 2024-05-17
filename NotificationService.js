@@ -59,18 +59,18 @@ const calculateSecondsUntilDeadline = (deadline) => {
   const deadlineTime = new Date(deadline).getTime();
   const currentTime = Date.now();
   const diff = deadlineTime - currentTime;
-  return Math.max(0, Math.floor(diff / 10000)); // Ensure positive value
+  return Math.max(0, Math.floor(diff / 1000000)); // Ensure positive value
 };
 
-// // const scheduleNotification = async () => {
-// //   const notificationId = await Notifications.scheduleNotificationAsync({
-// //     content: {
-// //       title: "Task Deadline Reminder",
-// //       body: `Task ${taskId} deadline is approaching!`,
-// //     },
-// //     trigger: { seconds: calculateSecondsUntilDeadline(deadline) },
-// //   });
+// const scheduleNotification = async () => {
+//   const notificationId = await Notifications.scheduleNotificationAsync({
+//     content: {
+//       title: "Task Deadline Reminder",
+//       body: `Task ${taskId} deadline is approaching!`,
+//     },
+//     trigger: { seconds: calculateSecondsUntilDeadline(deadline) },
+//   });
 
-// //   // Store the notificationId along with the task for future reference
-// //   return notificationId;
-// // };
+//   // Store the notificationId along with the task for future reference
+//   return notificationId;
+// };

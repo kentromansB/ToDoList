@@ -23,7 +23,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yourcompany.yourappname"
+      "package": "com.kentromansb.todo"
     },
     "web": {
       "favicon": "./assets/favicon.png"
